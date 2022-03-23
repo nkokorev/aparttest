@@ -1,0 +1,15 @@
+{
+  "name": "aparttest",
+  "version": "1.0.0",
+  "license": "MIT",
+  "main": "dist/app.ts",
+  "scripts": {
+    "start": "ts-node dist/app.ts",
+    "start-back": "tsc && node dist/app.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.2"
+  }
+}
