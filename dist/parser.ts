@@ -16,7 +16,23 @@ const Parser = {
 
                 // 1. Пересматриваем каждый раз все объекты в календаре. Может не супер решение, я не знаю как он формируется,
                 // иначе можно было бы запоминать последний номер записи и начинать с data[k=N]
-                for (let k in data) {
+                // Т.к. данные после парсинга идут [uid]: {data}, то имеет смысл итерироваться по массиву пар ключ/значение
+                for (const [uid, event] of Object.entries(data)) {
+
+                    // Отбрасываем объявления, оставляем только данные по расписанию
+                    // @ts-ignore
+                    if (event.type !== 'VEVENT') continue;
+                    // console.log(uid)
+
+                    // @ts-ignore
+                    if (!idata.hasOwnProperty(event.uid)) {
+                        // @ts-ignore
+                        idata[uid] = event;
+                    }
+                }
+
+                // Для перебора всех свойств из объекта (старый вариант)
+                /*for (let k in data) {
                     if (!Object.prototype.hasOwnProperty.call(data, k)) continue;
 
                     const event = data[k];
@@ -27,7 +43,7 @@ const Parser = {
                         // @ts-ignore
                         idata[event.uid] = event;
                     }
-                }
+                }*/
 
                 // 2. Выводим список uid в консоль по условиям задания
                 console.log(`Object UIDs # ${new Date()}`)

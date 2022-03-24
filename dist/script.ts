@@ -13,6 +13,12 @@ async function main() {
 
     // Запускаем обход с интервалом
     await Parser.run(conf.url, conf.interval);
+
+    /*const allUsers = await prisma.user.findMany({
+        include: { posts: true },
+    })
+    // use `console.dir` to print nested objects
+    console.dir(allUsers, { depth: null })*/
 }
 
 main()
