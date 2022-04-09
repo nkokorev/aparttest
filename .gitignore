@@ -6,3 +6,9 @@ nuxt.d.ts
 .output
 .env
 *config.json
+build
+npm-debug.log
+.DS_Store
+.history
+config
+tsconfig.tsbuildinfo

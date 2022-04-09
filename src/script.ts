@@ -8,7 +8,7 @@ async function main() {
 
     // Читаем конфиг в JSON-формате
     const fs = require('fs');
-    let rawdata = fs.readFileSync('./conf/config.json');
+    let rawdata = fs.readFileSync('./config.json');
     let conf = JSON.parse(rawdata);
 
     // Запускаем обход с интервалом
