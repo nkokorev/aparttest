@@ -1,58 +1,42 @@
 import ical from "node-ical";
 
 // Глобальный объект, в котором храним нужные функции и переменные.
-const Parser = {
-    // Основная функция обслуживающая интервал
-    run: (url: string, interval: number): any => {
+class Parser {
+    // Инициализируются только в конструкторе
+    private readonly url: string;
+    private readonly interval: number;
 
-        // Наш массив с данными, вместо "БД"
+    constructor(url: string, interval: number) {
+        /// ссылка с ключом доступа в query параметрах; задается в config.json
+        this.url = url;
+        /// интервал опроса в секундах; задается в config.json
+        this.interval = interval;
+    }
+
+    /* Запуск парсера с подготовленными данными из конструктора */
+    run (): NodeJS.Timer {
         let idata = {}
 
-        // Возвращаем id интервала, чтобы его можно было отменить (ну мало ли)
         return setInterval(() => {
 
             // Делаем запрос данных по URL
-            ical.async.fromURL(url, {}, function (err: any, data: any) {
+            ical.async.fromURL(this.url, {}, function (err: any, data: any) {
 
-                // 1. Пересматриваем каждый раз все объекты в календаре. Может не супер решение, я не знаю как он формируется,
-                // иначе можно было бы запоминать последний номер записи и начинать с data[k=N]
-                // Т.к. данные после парсинга идут [uid]: {data}, то имеет смысл итерироваться по массиву пар ключ/значение
-                // ForEach() / reduce
-                for (const [uid, event] of Object.entries(data)) {
-
-                    // Отбрасываем объявления, оставляем только данные по расписанию
-                    // @ts-ignore
-                    if (event.type !== 'VEVENT') continue;
-                    // console.log(uid)
-
-                    // @ts-ignore
-                    if (!idata.hasOwnProperty(event.uid)) {
+                // 1. Пересматриваем каждый раз все объекты в календаре.
+                Object.values(data).forEach( (event: any) => {
+                    // Отбрасываем meta-информацию и делаем проверку на дубли по uid-ключу (для повторных обходов)
+                    if ( (event.type === 'VEVENT') && !idata.hasOwnProperty(event.uid) ) {
                         // @ts-ignore
-                        idata[uid] = event;
+                        if (event.hasOwnProperty('uid')) idata[event.uid] = event;
                     }
-                }
-
-                // Для перебора всех свойств из объекта (старый вариант)
-                /*for (let k in data) {
-                    if (!Object.prototype.hasOwnProperty.call(data, k)) continue;
-
-                    const event = data[k];
-                    // отбрасываем другого типа записи (BEGIN:VCALENDAR)
-                    if (event.type !== 'VEVENT') continue;
-
-                    if (!idata.hasOwnProperty(event.uid)) {
-                        // @ts-ignore
-                        idata[event.uid] = event;
-                    }
-                }*/
+                })
 
                 // 2. Выводим список uid в консоль по условиям задания
                 console.log(`Object UIDs # ${new Date()}`)
                 console.dir(Object.keys(idata))
             });
-        }, interval * 1000); // интервал задается в секундах
-    },
+        }, this.interval * 1000); // интервал задается в секундах
+    }
 }
-
 
 export default Parser;

@@ -8,18 +8,12 @@ async function main() {
 
     // Читаем конфиг в JSON-формате
     const fs = require('fs');
-    let rawdata = fs.readFileSync('./config.json');
-    let conf = JSON.parse(rawdata);
+    let raw_data = fs.readFileSync('./config.json');
+    let conf = JSON.parse(raw_data);
 
     // Запускаем обход с интервалом
     let parser = new Parser(conf.url, conf.interval)
     await parser.run()
-
-    /*const allUsers = await prisma.user.findMany({
-        include: { posts: true },
-    })
-    // use `console.dir` to print nested objects
-    console.dir(allUsers, { depth: null })*/
 }
 
 main()
