@@ -24,11 +24,16 @@ class Parser {
 
                 // 1. Пересматриваем каждый раз все объекты в календаре.
                 Object.values(data).forEach( (event: any) => {
+                    // ключ парсим в int т.к. хранить будем в бд целочисленные значение
+                    const uid: number = parseInt(event.uid);
+
                     // Отбрасываем meta-информацию и делаем проверку на дубли по uid-ключу (для повторных обходов)
-                    if ( (event.type === 'VEVENT') && !idata.hasOwnProperty(event.uid) ) {
+                    if ( (event.type === 'VEVENT') && !idata.hasOwnProperty(uid) ) {
                         // @ts-ignore
-                        if (event.hasOwnProperty('uid')) idata[event.uid] = event;
+                        if (event.hasOwnProperty('uid')) idata[uid] = event;
                     }
+
+
                 })
 
                 // 2. Выводим список uid в консоль по условиям задания
